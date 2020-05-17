@@ -9,7 +9,7 @@
 import UIKit
 import Photos
 
-class AddEditViewController: UIViewController {
+class AddEditViewController: UIViewController, UITextFieldDelegate {
     
     
     @IBOutlet weak var tfTitle: UITextField!
@@ -31,11 +31,14 @@ class AddEditViewController: UIViewController {
         pickerView.backgroundColor = .white
         return pickerView
     }()
-    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.tfTitle.delegate = self
         // puxar dos dados do banco e atualizar memoria: "consoles"
         ConsolesManager.shared.loadConsoles(with: context)
     }

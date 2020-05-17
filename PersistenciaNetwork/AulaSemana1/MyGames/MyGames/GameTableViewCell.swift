@@ -14,6 +14,7 @@ class GameTableViewCell: UITableViewCell {
     @IBOutlet weak var ivCover: UIImageView!
     @IBOutlet weak var lbTitle: UILabel!
     @IBOutlet weak var lbConsole: UILabel!
+    @IBOutlet weak var ivConsoleImage: UIImageView!
     
     
     override func awakeFromNib() {
@@ -35,6 +36,13 @@ class GameTableViewCell: UITableViewCell {
             ivCover.image = image
         } else {
             ivCover.image = UIImage(named: "noCover")
+        }
+        
+        if let consoleImage = game.console?.image as? UIImage{
+            ivConsoleImage.image = consoleImage
+        }
+        else{
+            ivConsoleImage.image = UIImage(named: "noCover")
         }
     }
     

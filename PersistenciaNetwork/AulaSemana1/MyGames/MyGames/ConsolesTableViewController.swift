@@ -11,10 +11,11 @@ import UIKit
 class ConsolesTableViewController: UITableViewController {
 
     
-    
+    var label = UILabel()
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        label.text = "Você não tem plataformas cadastradas"
+        label.textAlignment = .center
         loadConsoles()
     }
     
@@ -22,7 +23,11 @@ class ConsolesTableViewController: UITableViewController {
         ConsolesManager.shared.loadConsoles(with: context)
         tableView.reloadData()
     }
-
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // se ocorrer mudancas na entidade Console, a atualização automatica não irá ocorrer porque nosso NSFetchResultsController esta monitorando a entidade Game. Caso tiver mudanças na entidade Console precisamos atualizar a tela com a tabela de alguma forma: reloadData :)
+        tableView.reloadData()
+    }
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -32,6 +37,7 @@ class ConsolesTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
+        tableView.backgroundView = ConsolesManager.shared.consoles.count == 0 ? label : nil
         return ConsolesManager.shared.consoles.count
     }
 
@@ -44,7 +50,7 @@ class ConsolesTableViewController: UITableViewController {
         return cell
     }
     
-
+    /*
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
          
         let console = ConsolesManager.shared.consoles[indexPath.row]
@@ -53,7 +59,7 @@ class ConsolesTableViewController: UITableViewController {
         // deselecionar atual cell
         tableView.deselectRow(at: indexPath, animated: false)
      }
-    
+    */
     
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -62,7 +68,17 @@ class ConsolesTableViewController: UITableViewController {
         tableView.deleteRows(at: [indexPath], with: .fade)
     }
     
-
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destination.
+        // Pass the selected object to the new view controller.
+        
+        if segue.identifier! == "consoleSegue" {
+            
+            let vc = segue.destination as! ConsoleViewController
+            vc.console = ConsolesManager.shared.consoles[tableView.indexPathForSelectedRow!.row]
+            
+        }
+    }
     /*
     // Override to support rearranging the table view.
     override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
@@ -87,7 +103,7 @@ class ConsolesTableViewController: UITableViewController {
         // Pass the selected object to the new view controller.
     }
     */
-
+    /*
     func showAlert(with console: Console?) {
         let title = console == nil ? "Adicionar" : "Editar"
         let alert = UIAlertController(title: title + " plataforma", message: nil, preferredStyle: .alert)
@@ -124,6 +140,6 @@ class ConsolesTableViewController: UITableViewController {
         // nil indica que sera criado uma plataforma nova
         showAlert(with: nil)
     }
-    
+    */
     
 } // fim da classe
